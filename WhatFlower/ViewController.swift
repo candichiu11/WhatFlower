@@ -32,8 +32,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let userPickedImage = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
-            imageView.image = userPickedImage
-            
+         //   imageView.image = userPickedImage
             guard let ciimage = CIImage(image: userPickedImage) else {
                 fatalError("Could not convert UIImage to CIImage")
             }
@@ -83,11 +82,17 @@ extension ViewController: wikiManagerDelegate {
     func didUpdateLabel(_ wikiManager: WikiManager, extract: WikiModel) {
         DispatchQueue.main.async{
             self.label.text = extract.extract
-            // Fetch Image Data
-//            if let data = try? Data(contentsOf: URL(string: extract.wikiImage)!) {
-//                   // Create Image and Update Image View
-//                self.imageView.image = UIImage(data: data)
-//        }
+           //  Fetch Image Data
+            if let flowerImageURL = URL(string: extract.wikiImage) {
+                if let data = try? Data(contentsOf: flowerImageURL) {
+                // Create Image and Update Image View
+                    if let image = UIImage(data: data) {
+                        DispatchQueue.main.async {
+                            self.imageView.image = image
+                        }
+                    }
+            }
+            }
     }
     }
 }

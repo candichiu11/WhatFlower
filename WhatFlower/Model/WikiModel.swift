@@ -9,5 +9,5 @@ import Foundation
 
 struct WikiModel {
     let extract: String
-  //  let wikiImage: String
+    let wikiImage: String
 }

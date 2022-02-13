@@ -18,9 +18,9 @@ struct Query: Codable {
 
 struct Pages: Codable {
     let extract: String
-  //  let thumbnail: Thumbnail
+    let thumbnail: Thumbnail
 }
 
-//struct Thumbnail: Codable {
-//    let source: String
-//}
+struct Thumbnail: Codable {
+    let source: String
+}

@@ -19,23 +19,18 @@ struct WikiManager {
     var delegate: wikiManagerDelegate?
     
     func fetchContent(flowerName: String) {
-        let checkedFlowerName: String
         
-        if flowerName.contains(" ") {
-            checkedFlowerName = flowerName.replacingOccurrences(of: " ", with: "%20")
-        } else {
-            checkedFlowerName = flowerName
-        }
+        var decoded =   "\(wikipediaURL)format=json&action=query&prop=extracts|pageimages&exintro&explaintext&titles=\(flowerName)&indexpageids&redirects=1&pithumbsize=500"
+        let encoded = decoded.addingPercentEncoding(
+            withAllowedCharacters: .urlQueryAllowed
+        )
         
-        let urlString = "\(wikipediaURL)format=json&action=query&prop=extracts&exintro&explaintext&titles=\(checkedFlowerName)&indexpageids&redirects=1"
-      
-        print(urlString)
-        
-        performRequest(with: urlString)
+        print(encoded!)
+        performRequest(with: encoded!)
     }
     
    func performRequest(with urlString: String) {
-        if let url = URL(string: urlString) {
+       if let url = URL(string: urlString) {
             let session = URLSession(configuration: .default)
             let task = session.dataTask(with: url) { data, response, error in
                 if error != nil {
@@ -61,8 +56,9 @@ struct WikiManager {
             let id = decodedData.query.pageids[0]
             let extract = decodedData.query.pages[id]?.extract
             print(extract!)
-           // let wikiPictureURL = decodedData.query.pages[id]?.thumbnail.source
-            let wikiModel = WikiModel(extract: extract!)
+            let wikiPictureURL = decodedData.query.pages[id]?.thumbnail.source
+            let wikiModel = WikiModel(extract: extract!, wikiImage: wikiPictureURL!)
+
             return wikiModel
         } catch {
             delegate?.didFailWithError(error: error)
